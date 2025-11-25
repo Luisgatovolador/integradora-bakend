@@ -2,11 +2,20 @@ import Usuario from "../models/Usuario.js";
 import bcrypt from "bcryptjs";
 
 // 🔹 Obtener todos los usuarios
+// 🔹 Obtener todos los usuarios
 export const getUsuarios = async (req, res) => {
   try {
+    console.log("🟢 GET /api/usuarios ejecutándose...");
+    console.log("🔑 Usuario autenticado:", req.user);
+    
     const usuarios = await Usuario.find().populate("sucursal");
+    
+    console.log("📊 Usuarios encontrados en BD:", usuarios.length);
+    console.log("👥 Lista de usuarios:", usuarios.map(u => ({ id: u._id, nombre: u.nombre, email: u.email })));
+    
     res.json(usuarios);
   } catch (error) {
+    console.error("❌ Error en getUsuarios:", error);
     res.status(500).json({ message: error.message });
   }
 };
