@@ -93,3 +93,26 @@ export const getVentasMensuales = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const obtenerVentasPorCliente = async (req, res) => {
+  try {
+    const { clienteId } = req.params;
+    console.log("📦 Buscando ventas para cliente:", clienteId);
+    
+    const ventas = await Venta.find({ cliente: clienteId })
+      .populate("productos.producto")
+      .populate("cliente")
+      .populate("empleado")
+      .sort({ fecha: -1 });
+    
+    console.log("✅ Ventas encontradas:", ventas.length);
+    res.status(200).json(ventas);
+  } catch (error) {
+    console.error("❌ Error al obtener ventas del cliente:", error);
+    res.status(500).json({ 
+      mensaje: "Error al obtener ventas del cliente", 
+      error: error.message 
+    });
+  }
+};
+
