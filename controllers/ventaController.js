@@ -1,13 +1,14 @@
 import Venta from "../models/Venta.js";
-import Inventario from "../models/Inventario.js";
+import Producto from "../models/Producto.js";
 
 export const registrarVenta = async (req, res) => {
   try {
     const { productos, total, cliente, empleado, metodoPago } = req.body;
 
     for (const item of productos) {
-      const producto = await Inventario.findById(item.producto);
-      if (!producto) return res.status(404).json({ mensaje: `Producto no encontrado: ${item.nombre}` });
+      const producto = await Producto.findById(item.producto);
+      if (!producto) return res.status(404).json({ mensaje: `Producto no encontrado: ${item.producto}` });
+
       if (producto.stock < item.cantidad) return res.status(400).json({ mensaje: `Stock insuficiente para ${item.nombre}` });
       producto.stock -= item.cantidad;
       await producto.save();
