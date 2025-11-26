@@ -2,11 +2,16 @@ import MateriaPrima from "../models/MateriaPrima.js";
 
 export const getMateriasPrimas = async (req, res) => {
   try {
+    console.log("🟢 GET /api/materias-primas ejecutándose...");
+    
     const materias = await MateriaPrima.find()
-      .populate("proveedores")
-      .populate("comparativaProveedores.proveedor");
+      .populate("proveedores");
+      // .populate("comparativaProveedores.proveedor"); // ← ESTA LÍNEA CAUSA EL ERROR
+    
+    console.log("✅ Materias primas encontradas:", materias.length);
     res.json(materias);
   } catch (error) {
+    console.error("❌ Error en getMateriasPrimas:", error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -14,8 +19,9 @@ export const getMateriasPrimas = async (req, res) => {
 export const getMateriaPrimaById = async (req, res) => {
   try {
     const materia = await MateriaPrima.findById(req.params.id)
-      .populate("proveedores")
-      .populate("comparativaProveedores.proveedor");
+      .populate("proveedores");
+      // .populate("comparativaProveedores.proveedor"); // ← ESTA TAMBIÉN
+    
     if (!materia) return res.status(404).json({ message: "Materia prima no encontrada" });
     res.json(materia);
   } catch (error) {
